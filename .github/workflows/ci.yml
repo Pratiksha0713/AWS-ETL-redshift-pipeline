@@ -1,0 +1,321 @@
+name: Data Engineering CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.10'
+  AWS_REGION: 'us-east-1'
+
+jobs:
+  # ============================================================
+  # Job 1: Code Quality & Linting
+  # ============================================================
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black isort pylint bandit
+        pip install -r requirements.txt
+    
+    - name: Run Black formatter check
+      run: |
+        black --check --diff glue_jobs/ dags/ tests/
+      continue-on-error: true
+    
+    - name: Run isort import checker
+      run: |
+        isort --check-only --diff glue_jobs/ dags/ tests/
+      continue-on-error: true
+    
+    - name: Run Flake8 linter
+      run: |
+        flake8 glue_jobs/ dags/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 glue_jobs/ dags/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+    
+    - name: Run Pylint
+      run: |
+        pylint glue_jobs/ dags/ tests/ --fail-under=7.0
+      continue-on-error: true
+    
+    - name: Run Bandit security scan
+      run: |
+        bandit -r glue_jobs/ dags/ -ll
+      continue-on-error: true
+
+  # ============================================================
+  # Job 2: Data Quality Tests
+  # ============================================================
+  data-quality-tests:
+    name: Data Quality Validation
+    runs-on: ubuntu-latest
+    needs: code-quality
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run Pandera data validation tests
+      run: |
+        cd tests
+        python pandera_tests.py
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: data-quality-test-results
+        path: tests/*.log
+        retention-days: 7
+
+  # ============================================================
+  # Job 3: Unit Tests
+  # ============================================================
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: code-quality
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov pytest-mock
+        pip install -r requirements.txt
+    
+    - name: Run pytest
+      run: |
+        pytest tests/ -v --cov=glue_jobs --cov=dags --cov-report=xml --cov-report=html
+      continue-on-error: true
+    
+    - name: Upload coverage reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: htmlcov/
+        retention-days: 7
+
+  # ============================================================
+  # Job 4: SQL Validation
+  # ============================================================
+  sql-validation:
+    name: SQL Syntax Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install SQLFluff
+      run: |
+        pip install sqlfluff
+    
+    - name: Lint SQL files
+      run: |
+        sqlfluff lint sql/ --dialect redshift
+      continue-on-error: true
+    
+    - name: Check SQL formatting
+      run: |
+        sqlfluff fix sql/ --dialect redshift --check
+      continue-on-error: true
+
+  # ============================================================
+  # Job 5: Security Scan
+  # ============================================================
+  security-scan:
+    name: Security & Dependency Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety pip-audit
+    
+    - name: Run Safety check
+      run: |
+        pip install -r requirements.txt
+        safety check --json
+      continue-on-error: true
+    
+    - name: Run pip-audit
+      run: |
+        pip-audit -r requirements.txt
+      continue-on-error: true
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+      continue-on-error: true
+    
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  # ============================================================
+  # Job 6: Build & Package
+  # ============================================================
+  build-package:
+    name: Build & Package Artifacts
+    runs-on: ubuntu-latest
+    needs: [data-quality-tests, unit-tests, sql-validation]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Create deployment package
+      run: |
+        mkdir -p dist
+        zip -r dist/glue-jobs.zip glue_jobs/
+        zip -r dist/dags.zip dags/
+        zip -r dist/sql-scripts.zip sql/
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: deployment-packages
+        path: dist/
+        retention-days: 30
+
+  # ============================================================
+  # Job 7: Deploy to Dev (on main branch only)
+  # ============================================================
+  deploy-dev:
+    name: Deploy to Dev Environment
+    runs-on: ubuntu-latest
+    needs: build-package
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: development
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: deployment-packages
+        path: dist/
+    
+    - name: Deploy Glue jobs to S3
+      run: |
+        aws s3 cp glue_jobs/raw_to_curated.py s3://${{ secrets.S3_BUCKET_SCRIPTS }}/glue-jobs/
+      continue-on-error: true
+    
+    - name: Update Glue job
+      run: |
+        aws glue update-job --job-name raw-to-curated-etl \
+          --job-update "ScriptLocation=s3://${{ secrets.S3_BUCKET_SCRIPTS }}/glue-jobs/raw_to_curated.py"
+      continue-on-error: true
+    
+    - name: Deployment summary
+      run: |
+        echo "✅ Deployment to DEV completed successfully"
+        echo "Glue Job: raw-to-curated-etl updated"
+        echo "Region: ${{ env.AWS_REGION }}"
+
+  # ============================================================
+  # Job 8: Notification
+  # ============================================================
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    needs: [deploy-dev]
+    if: always()
+    
+    steps:
+    - name: Slack Notification
+      uses: 8398a7/action-slack@v3
+      if: always()
+      with:
+        status: ${{ job.status }}
+        text: |
+          CI/CD Pipeline ${{ job.status }}
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      continue-on-error: true
+

@@ -1,0 +1,22 @@
+location_id,store_name,address,city,state,zip_code,region,country
+LOC3001,Tech Store NYC,500 5th Avenue,New York,NY,10110,EAST,USA
+LOC3002,Tech Store LA,100 Universal City Plaza,Los Angeles,CA,90068,WEST,USA
+LOC3003,Tech Store Chicago,875 N Michigan Ave,Chicago,IL,60611,CENTRAL,USA
+LOC3004,Tech Store Houston,5085 Westheimer Rd,Houston,TX,77056,SOUTH,USA
+LOC3005,Tech Store Phoenix,2901 W Thunderbird Rd,Phoenix,AZ,85023,WEST,USA
+LOC3006,Tech Store Philadelphia,1201 Market St,Philadelphia,PA,19107,EAST,USA
+LOC3007,Tech Store San Antonio,15900 La Cantera Pkwy,San Antonio,TX,78256,SOUTH,USA
+LOC3008,Tech Store San Diego,7007 Friars Rd,San Diego,CA,92108,WEST,USA
+LOC3009,Tech Store Dallas,13350 Dallas Pkwy,Dallas,TX,75240,SOUTH,USA
+LOC3010,Tech Store San Jose,2855 Stevens Creek Blvd,San Jose,CA,95128,WEST,USA
+LOC3011,Tech Store Austin,10000 Research Blvd,Austin,TX,78759,SOUTH,USA
+LOC3012,Tech Store Jacksonville,10300 Southside Blvd,Jacksonville,FL,32256,SOUTH,USA
+LOC3013,Tech Store Fort Worth,4200 South Fwy,Fort Worth,TX,76115,SOUTH,USA
+LOC3014,Tech Store Columbus,1500 Polaris Pkwy,Columbus,OH,43240,CENTRAL,USA
+LOC3015,Tech Store Charlotte,4400 Sharon Rd,Charlotte,NC,28211,SOUTH,USA
+LOC3016,Tech Store San Francisco,845 Market St,San Francisco,CA,94103,WEST,USA
+LOC3017,Tech Store Indianapolis,8702 Keystone Crossing,Indianapolis,IN,46240,CENTRAL,USA
+LOC3018,Tech Store Seattle,400 Pine St,Seattle,WA,98101,WEST,USA
+LOC3019,Tech Store Denver,3000 E 1st Ave,Denver,CO,80206,WEST,USA
+LOC3020,Tech Store Boston,800 Boylston St,Boston,MA,02199,EAST,USA
+

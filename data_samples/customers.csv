@@ -1,0 +1,22 @@
+customer_id,first_name,last_name,email,phone,address,city,state,zip_code,country,created_date,is_active
+CUST1001,John,Doe,john.doe@email.com,555-0101,123 Main St,New York,NY,10001,USA,2023-01-15,true
+CUST1002,Jane,Smith,jane.smith@email.com,555-0102,456 Oak Ave,Los Angeles,CA,90001,USA,2023-01-20,true
+CUST1003,Michael,Johnson,michael.j@email.com,555-0103,789 Pine Rd,Chicago,IL,60601,USA,2023-02-05,true
+CUST1004,Emily,Williams,emily.w@email.com,555-0104,321 Elm St,Houston,TX,77001,USA,2023-02-10,true
+CUST1005,David,Brown,david.brown@email.com,555-0105,654 Maple Dr,Phoenix,AZ,85001,USA,2023-02-15,true
+CUST1006,Sarah,Davis,sarah.davis@email.com,555-0106,987 Cedar Ln,Philadelphia,PA,19019,USA,2023-03-01,true
+CUST1007,James,Miller,james.miller@email.com,555-0107,147 Birch Blvd,San Antonio,TX,78201,USA,2023-03-05,true
+CUST1008,Lisa,Wilson,lisa.wilson@email.com,555-0108,258 Spruce Ct,San Diego,CA,92101,USA,2023-03-10,true
+CUST1009,Robert,Moore,robert.moore@email.com,555-0109,369 Walnut Way,Dallas,TX,75201,USA,2023-03-15,true
+CUST1010,Jennifer,Taylor,jennifer.t@email.com,555-0110,741 Cherry St,San Jose,CA,95101,USA,2023-04-01,true
+CUST1011,William,Anderson,william.a@email.com,555-0111,852 Ash Ave,Austin,TX,73301,USA,2023-04-05,true
+CUST1012,Mary,Thomas,mary.thomas@email.com,555-0112,963 Poplar Rd,Jacksonville,FL,32099,USA,2023-04-10,true
+CUST1013,Richard,Jackson,richard.j@email.com,555-0113,159 Willow Ln,Fort Worth,TX,76101,USA,2023-04-15,true
+CUST1014,Patricia,White,patricia.white@email.com,555-0114,357 Sycamore Dr,Columbus,OH,43004,USA,2023-05-01,true
+CUST1015,Charles,Harris,charles.h@email.com,555-0115,486 Hickory St,Charlotte,NC,28201,USA,2023-05-05,true
+CUST1016,Barbara,Martin,barbara.m@email.com,555-0116,795 Magnolia Ave,San Francisco,CA,94101,USA,2023-05-10,true
+CUST1017,Daniel,Thompson,daniel.t@email.com,555-0117,124 Dogwood Ct,Indianapolis,IN,46201,USA,2023-05-15,true
+CUST1018,Nancy,Garcia,nancy.garcia@email.com,555-0118,246 Redwood Blvd,Seattle,WA,98101,USA,2023-06-01,true
+CUST1019,Paul,Martinez,paul.martinez@email.com,555-0119,468 Fir Way,Denver,CO,80201,USA,2023-06-05,true
+CUST1020,Karen,Robinson,karen.robinson@email.com,555-0120,579 Palm Ln,Boston,MA,02101,USA,2023-06-10,true
+
