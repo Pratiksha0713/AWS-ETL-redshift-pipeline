@@ -1,0 +1,34 @@
+# AWS and Data Engineering Dependencies
+apache-airflow==2.7.3
+apache-airflow-providers-amazon==8.13.0
+boto3==1.34.34
+botocore==1.34.34
+
+# PySpark (for local testing - Glue uses its own runtime)
+pyspark==3.5.0
+
+# Data Quality & Validation
+pandera==0.17.2
+great-expectations==0.18.8
+
+# Database Drivers
+psycopg2-binary==2.9.9
+redshift-connector==2.0.918
+
+# Data Processing
+pandas==2.1.4
+numpy==1.26.3
+pyarrow==14.0.2
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+moto==4.2.9
+
+# Utilities
+python-dotenv==1.0.0
+pyyaml==6.0.1
+
+# Logging & Monitoring
+watchtower==3.0.1
+
