@@ -268,3 +268,6 @@ Solution:
 - [Amazon Redshift Connector](https://docs.aws.amazon.com/redshift/latest/mgmt/connecting-via-client-tools.html)
 - [DAX Guide](https://dax.guide/)
 
+
+
+
