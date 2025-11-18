@@ -1,6 +1,8 @@
 # AWS ETL Redshift Data Pipeline 🚀
 
-A complete end-to-end data engineering project implementing a modern data pipeline with AWS services, demonstrating ETL best practices, data quality validation, and automated orchestration.
+> **Built by Pratiksha** | A complete end-to-end data engineering project showcasing production-ready ETL pipeline design, star schema implementation, and AWS cloud architecture.
+
+A hands-on data engineering project implementing a modern data pipeline with AWS services, demonstrating ETL best practices, data quality validation, and automated orchestration. This project represents my journey into cloud-based data engineering and showcases industry-standard patterns and practices.
 
 ## 📊 Project Architecture
 
@@ -506,9 +508,12 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 
 ## 📧 Contact
 
-Your Name - your.email@example.com
+**Pratiksha** - [GitHub](https://github.com/Pratiksha0713)
 
-Project Link: https://github.com/YOUR_USERNAME/AWS-ETL-redshift-pipeline
+Project Link: https://github.com/Pratiksha0713/AWS-ETL-redshift-pipeline
+
+📝 **Read about my learning journey:** [LEARNING_JOURNEY.md](LEARNING_JOURNEY.md)  
+🎯 **Understand my design decisions:** [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md)
 
 ## 🙏 Acknowledgments
 
