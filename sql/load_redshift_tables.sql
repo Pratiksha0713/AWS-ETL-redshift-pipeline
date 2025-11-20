@@ -370,3 +370,6 @@ ORDER BY day_type;
 -- Data load completed successfully!
 SELECT 'ALL TABLES LOADED AND VALIDATED' AS status;
 
+
+
+
